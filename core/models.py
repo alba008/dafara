@@ -8,11 +8,27 @@ class Program(models.Model):
     slug=models.SlugField(unique=True)
     summary=models.TextField()
     description=models.TextField()
+    image=models.ImageField(upload_to="programs/",blank=True,help_text="Approved public photograph. JPEG, PNG or WebP; up to 5 MB.")
     image_path=models.CharField(max_length=200,blank=True,help_text="Path to an approved image within static assets, for example core/classroom.png.")
     image_alt=models.CharField(max_length=200,blank=True)
     image_caption=models.CharField(max_length=250,blank=True)
     published=models.BooleanField(default=False)
+    @property
+    def image_url(self):
+        if self.image: return self.image.url
+        from django.templatetags.static import static
+        return static(self.image_path) if self.image_path else ""
     def __str__(self): return self.title
+
+class ProgramPhoto(models.Model):
+    program=models.ForeignKey(Program,on_delete=models.CASCADE,related_name="photos")
+    image=models.ImageField(upload_to="programs/gallery/")
+    alt=models.CharField(max_length=200)
+    caption=models.CharField(max_length=250,blank=True)
+    order=models.PositiveIntegerField(default=0)
+    class Meta:
+        ordering=["order","pk"]
+
 class Case(models.Model):
     STATES=[(s,s.title()) for s in ['submitted','verified','approved','in_progress','completed']]
     reference=models.CharField(max_length=30,unique=True)

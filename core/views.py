@@ -60,7 +60,8 @@ def action(request,pk):
     except ValidationError as exc: messages.error(request,' '.join(exc.messages))
     return redirect('case',pk=pk)
 
-from .forms import ProgramForm,CaseForm,CampaignForm
+from .forms import ProgramForm,CaseForm,CampaignForm,ProgramPhotoFormSet
+from django.db import transaction
 from django.http import Http404
 RECORDS={
     'programs':(Program,ProgramForm,'program','Programs'),
@@ -93,7 +94,16 @@ def record_form(request,kind,pk=None):
     model,form,code,title=record_config(request.user,kind,'change' if pk else 'add')
     if form is None or (pk and kind=='cases'): raise Http404
     item=get_object_or_404(model,pk=pk) if pk else None
-    fields=form(request.POST or None,instance=item)
-    if request.method=='POST' and fields.is_valid():
-        fields.save();messages.success(request,'Saved successfully.');return redirect('records',kind=kind)
-    return render(request,'core/record_form.html',{'form':fields,'title':title,'kind':kind,'editing':item is not None})
+    fields=form(request.POST or None,request.FILES or None,instance=item)
+    gallery = ProgramPhotoFormSet(request.POST or None, request.FILES or None, instance=fields.instance, prefix='photos') if kind=='programs' else None
+    if request.method=='POST':
+        valid=fields.is_valid()
+        gallery_valid=gallery.is_valid() if gallery is not None else True
+        if valid and gallery_valid:
+            with transaction.atomic():
+                saved=fields.save()
+                if gallery is not None:
+                    gallery.instance=saved
+                    gallery.save()
+            messages.success(request,'Saved successfully.');return redirect('records',kind=kind)
+    return render(request,'core/record_form.html',{'form':fields,'gallery':gallery,'title':title,'kind':kind,'editing':item is not None})

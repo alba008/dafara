@@ -3,3 +3,8 @@ from django.contrib.auth import views as auth
 from django.urls import path
 from core import views
 urlpatterns=[path('',views.home,name='home'),path('programs/',views.programs,name='programs'),path('programs/<slug:slug>/',views.program,name='program'),path('impact/',views.impact,name='impact'),path('mission/',views.mission,name='mission'),path('about/',views.about,name='about'),path('contact/',views.enquiry,{'kind':'contact'},name='contact'),path('volunteer/',views.enquiry,{'kind':'volunteer'},name='volunteer'),path('donate/',views.donate,name='donate'),path('login/',auth.LoginView.as_view(template_name='core/login.html'),name='login'),path('logout/',auth.LogoutView.as_view(),name='logout'),path('management/',views.dashboard,name='dashboard'),path('management/records/<str:kind>/',views.records,name='records'),path('management/records/<str:kind>/new/',views.record_form,name='record_create'),path('management/records/<str:kind>/<int:pk>/edit/',views.record_form,name='record_edit'),path('management/cases/<int:pk>/',views.case_detail,name='case'),path('management/cases/<int:pk>/action/',views.action,name='action'),path('admin/',admin.site.urls)]
+
+from django.conf import settings
+from django.conf.urls.static import static
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
