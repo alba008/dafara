@@ -47,3 +47,31 @@ class ProgramPhotoTests(TestCase):
             {'image':SimpleUploadedFile('bad.html',b'<script>alert(1)</script>',content_type='text/html')})
         self.assertFalse(form.is_valid())
         self.assertIn('image',form.errors)
+
+    def test_shared_photos_replace_static_illustrations(self):
+        with tempfile.TemporaryDirectory() as folder, override_settings(MEDIA_ROOT=folder):
+            environment=Program.objects.create(title='Environmental Protection',slug='environment',summary='Nature',description='Nature',published=True,image=picture(),image_alt='Tree planting')
+            ProgramPhoto.objects.create(program=environment,image=picture(),alt='Community planting',caption='Planting together')
+            response=self.client.get('/')
+            self.assertContains(response,environment.image.url)
+            self.assertNotContains(response,'core/community.png')
+            response=self.client.get('/programs/')
+            self.assertContains(response,'Planting together')
+            self.assertNotContains(response,'core/classroom.png')
+            environment.published=False
+            environment.save()
+            self.assertNotContains(self.client.get('/'),environment.image.url)
+
+    def test_shared_photos_mix_environment_and_education(self):
+        from .context import brand
+        with tempfile.TemporaryDirectory() as folder, override_settings(MEDIA_ROOT=folder):
+            environment=Program.objects.create(title='Environment',slug='environment',published=True,image=picture())
+            education=Program.objects.create(title='Education',slug='education',published=True,image=picture())
+            extra=ProgramPhoto.objects.create(program=environment,image=picture(),alt='Planting')
+            selected=brand(None)
+            self.assertEqual(selected['site_hero']['url'],environment.image.url)
+            self.assertEqual(selected['site_story']['url'],education.image.url)
+            self.assertEqual(selected['site_involve']['url'],extra.image.url)
+            environment.published=False
+            environment.save()
+            self.assertEqual(brand(None)['site_hero']['url'],education.image.url)
