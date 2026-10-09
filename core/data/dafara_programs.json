@@ -1,0 +1,38 @@
+[
+  {
+    "slug": "survivors",
+    "title": "Survivor Support & Protection",
+    "summary": "Every survivor deserves safety, dignity, and someone who listens.",
+    "description": "Dafara stands alongside survivors of sexual violence, supporting care, emotional wellbeing, and recovery. Being heard and treated with respect is central to this work."
+  },
+  {
+    "slug": "children",
+    "title": "Children’s Care & Opportunity",
+    "summary": "Care, belonging, and opportunities for children facing hardship.",
+    "description": "This program focuses on orphaned children, children living on the streets, and families facing severe hardship. Food, clothing, shelter, and access to learning can help children grow with dignity and a sense of belonging."
+  },
+  {
+    "slug": "water",
+    "title": "Clean Water & Access",
+    "summary": "Safe water for everyday life and healthier communities.",
+    "description": "Clean water is essential for drinking, cooking, and everyday wellbeing. This program focuses on access to safe water and the needs of communities facing water shortages."
+  },
+  {
+    "slug": "environment",
+    "title": "Environmental Protection",
+    "summary": "Caring for the natural resources that sustain our communities.",
+    "description": "Protecting the environment supports the people who depend on it. This program focuses on caring for natural resources and encouraging communities to protect the places they call home."
+  },
+  {
+    "slug": "education",
+    "title": "Education & Entrepreneurship",
+    "summary": "Learning, practical skills, and pathways to independence.",
+    "description": "Poverty can put education out of reach. Dafara supports access to learning and educational resources, while education and entrepreneurship offer pathways toward more independent futures."
+  },
+  {
+    "slug": "health",
+    "title": "Health & Wellbeing",
+    "summary": "Dignity and support for people facing illness and disability.",
+    "description": "Dafara supports people facing cancer, chronic illness, and disability. Children with autism and their families are an important part of this work, with attention to education, care, and inclusion."
+  }
+]
